@@ -2,7 +2,7 @@
 
 namespace Gigamel\Frontend\View\Driver;
 
-use Gigamel\Frontend\RenderDriverInterface;
+use Gigamel\Frontend\View\RenderDriverInterface;
 
 use function str_ends_with;
 
