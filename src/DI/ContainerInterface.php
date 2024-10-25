@@ -9,7 +9,7 @@ interface ContainerInterface
     /**
      * @throws Exception
      */
-    public function put(string $id, mixed $dependency = null): void;
+    public function register(string $id, mixed $dependency = null): void;
 
     /**
      * @throws Exception

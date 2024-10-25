@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace Gigamel\DI\Import;
+namespace Gigamel\Import;
 
-interface ImporterInterface
+interface ImportableInterface
 {
     public function import(string $source): array;
 }

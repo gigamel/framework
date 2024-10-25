@@ -2,7 +2,7 @@
 
 namespace Gigamel\Frontend\View;
 
-interface RenderEngineInterface extends ViewInterface
+interface RenderCompositeInterface extends RenderableInterface
 {
     public function setDriver(RenderDriverInterface $driver): void;
 }

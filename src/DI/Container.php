@@ -2,8 +2,8 @@
 
 namespace Gigamel\DI;
 
-use Gigamel\DI\Import\ImporterInterface;
-use Gigamel\DI\Import\PhpArrayImporter;
+use Gigamel\DI\Argument\ImporterInterface;
+use Gigamel\DI\Argument\PhpArrayImporter;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionParameter;
@@ -32,7 +32,7 @@ class Container implements ContainerInterface
     /**
      * @throws Exception
      */
-    public function put(string $id, mixed $dependency = null): void
+    public function register(string $id, mixed $dependency = null): void
     {
         if (null === $dependency) {
             if (!class_exists($id)) {

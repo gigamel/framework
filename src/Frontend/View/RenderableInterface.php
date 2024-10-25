@@ -2,7 +2,7 @@
 
 namespace Gigamel\Frontend\View;
 
-interface ViewInterface
+interface RenderableInterface
 {
     public function render(string $view, array $vars = []): string;
 }

@@ -2,7 +2,7 @@
 
 namespace Gigamel\Frontend\View;
 
-interface RenderDriverInterface extends ViewInterface
+interface RenderDriverInterface extends RenderableInterface
 {
-    public function isCompatible(string $view): bool;
+    public function getExtension(): string;
 }

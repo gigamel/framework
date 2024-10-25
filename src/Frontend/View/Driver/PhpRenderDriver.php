@@ -4,13 +4,14 @@ namespace Gigamel\Frontend\View\Driver;
 
 use Gigamel\Frontend\View\RenderDriverInterface;
 
+use function ob_get_clean;
 use function str_ends_with;
 
 final class PhpRenderDriver implements RenderDriverInterface
 {
-    public function isCompatible(string $view): bool
+    public function getExtension(): string
     {
-        return str_ends_with($view, '.php');
+        return 'php';
     }
 
     public function render(string $view, array $vars = []): string
