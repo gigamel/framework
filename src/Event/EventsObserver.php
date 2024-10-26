@@ -21,7 +21,10 @@ class EventsObserver implements EventsObserverInterface
         }
 
         foreach ($this->observers[$eventName] as $observer) {
-            $this->instantiateObserver($observer)($event);
+            $isStoppable = $this->instantiateObserver($observer)($event);
+            if ($isStoppable) {
+                break;
+            }
         }
 
         unset($this->observers[$eventName]);
@@ -29,7 +32,9 @@ class EventsObserver implements EventsObserverInterface
 
     protected function instantiateObserver(string $observer): callable
     {
-        return new $observer(...array_values($observer));
+        return new $observer(...array_values(
+            $this->getObserverArguments($observer)
+        ));
     }
 
     protected function getObserverArguments(string $observer): array
