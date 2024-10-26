@@ -22,7 +22,7 @@ class Router implements RouterInterface
     public function handleClientMessage(ClientMessageInterface $message): RouteInterface
     {
         foreach ($this->collection->getCollection() as $route) {
-            if (!in_array($message->getMethod(), $route->getHttpMethods(), true)) {
+            if (!in_array($message->getMethod(), $route->getMethods(), true)) {
                 continue;
             }
 
