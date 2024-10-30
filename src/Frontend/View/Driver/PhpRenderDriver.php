@@ -18,8 +18,12 @@ final class PhpRenderDriver implements RenderDriverInterface
     {
         extract($vars);
         unset($params);
-        ob_start();
-        require $view;
-        return ob_get_clean() ?: '';
+
+        try {
+            ob_start();
+            require($view);
+        } finally {
+            return ob_get_clean() ?: '';
+        }
     }
 }

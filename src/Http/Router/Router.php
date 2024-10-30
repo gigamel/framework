@@ -2,10 +2,10 @@
 
 namespace Gigamel\Http\Router;
 
+use Gigamel\Http\HttpException;
 use Gigamel\Http\Protocol\ClientMessageInterface;
 use Gigamel\Http\Protocol\ClientMessage\Method;
 use Gigamel\Http\Protocol\ServerMessage\Code;
-use Exception;
 
 use function in_array;
 
@@ -19,7 +19,7 @@ class Router implements RouterInterface
     /**
      * @throws inheritDoc
      */
-    public function handleClientMessage(ClientMessageInterface $message): RouteInterface
+    public function handleClientMessage(ClientMessageInterface $message): RouteRestInterface
     {
         foreach ($this->collection->getCollection() as $route) {
             if (!in_array($message->getMethod(), $route->getMethods(), true)) {
@@ -27,11 +27,11 @@ class Router implements RouterInterface
             }
 
             if ($route->match($message)) {
-                return $route;
+                return $routeRest;
             }
         }
 
-        throw new Exception('Route not found');
+        throw new HttpException('Route not found', 404);
     }
 
     public function generate(string $name, array $segments = []): string
@@ -40,6 +40,6 @@ class Router implements RouterInterface
         if ($route) {
             return $route->generate($segments);
         }
-        throw new Exception('Route not found');
+        throw new HttpException('Route not found', 404);
     }
 }

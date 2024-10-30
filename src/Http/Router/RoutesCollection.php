@@ -2,7 +2,7 @@
 
 namespace Gigamel\Http\Router;
 
-class Collection implements CollectionInterface
+class RoutesCollection implements RoutesCollectionInterface
 {
     /** @var RouteInterface[] */
     protected array $collection = [];

@@ -22,9 +22,7 @@ interface RouteInterface
      */
     public function getMethods(): array;
 
-    public function match(ClientMessageInterface $message): bool;
+    public function match(ClientMessageInterface $message): ?RouteRestInterface;
 
     public function generate(array $segments = []): string;
-
-    public function getSegments(): array;
 }

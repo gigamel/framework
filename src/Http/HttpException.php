@@ -6,11 +6,12 @@ use Gigamel\Http\Protocol\ServerMessageInterface;
 use Gigamel\Http\Protocol\ServerMessage\Code;
 use RuntimeException;
 
-class Exception extends RuntimeException
+class HttpException extends RuntimeException implements HttpExceptionInterface
 {
     public function __construct(
         string $message = '',
         int $code = Code::INTERNAL_SERVER_ERROR,
+        protected array $headers = [],
         ?Exception $e = null
     ) {
         if (!in_array($code, Code::ALLOWED, true)) {
@@ -22,5 +23,10 @@ class Exception extends RuntimeException
         }
         
         parent::__construct($message, $code, $e);
+    }
+
+    public function getHeaders(): array
+    {
+        return $this->headers;
     }
 }

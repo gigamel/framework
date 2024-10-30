@@ -2,18 +2,18 @@
 
 namespace Gigamel\Http\Router;
 
-use Gigamel\Http\Exception;
+use Gigamel\Http\HttpExceptionInterface;
 use Gigamel\Http\Protocol\ClientMessageInterface;
 
 interface RouterInterface
 {
     /**
-     * @throws Exception
+     * @throws HttpExceptionInterface
      */
-    public function handleClientMessage(ClientMessageInterface $message): RouteInterface;
+    public function handleClientMessage(ClientMessageInterface $message): RouteRestInterface;
 
     /**
-     * @throws Exception
+     * @throws HttpExceptionInterface
      */
     public function generate(string $name, array $segments = []): string;
 }

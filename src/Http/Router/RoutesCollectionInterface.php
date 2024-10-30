@@ -2,7 +2,7 @@
 
 namespace Gigamel\Http\Router;
 
-interface CollectionInterface
+interface RoutesCollectionInterface
 {
     public function add(RouteInterface ...$route): void;
 
