@@ -26,7 +26,7 @@ class Router implements RouterInterface
                 continue;
             }
 
-            if ($route->match($message)) {
+            if ($routeRest = $route->match($message)) {
                 return $routeRest;
             }
         }
