@@ -8,6 +8,12 @@ use ReflectionClass;
 use ReflectionMethod;
 use ReflectionParameter;
 
+use function array_key_exists;
+use function array_replace_recursive;
+use function class_exists;
+use function interface_exists;
+use function is_string;
+
 class Container implements ContainerInterface
 {
     protected array $dependencies = [];
@@ -30,37 +36,33 @@ class Container implements ContainerInterface
     }
 
     /**
-     * @throws Exception
+     * @throws ContainerException
      */
-    public function register(string $id, mixed $dependency = null): void
+    public function set(string $id, mixed $dependency = null): void
     {
-        if (null === $dependency) {
-            if (!class_exists($id)) {
-                throw new Exception(
-                    'ID should be type of class when Dependency NULL',
-                );
-            }
-            
-            $dependency = $id;
-        }
-        
         if ($this->has($id)) {
-            throw new Exception(sprintf(
+            throw new ContainerException(sprintf(
                 'Dependency [%s] already exists',
                 $id
             ));
         }
 
-        $this->dependencies[$id] = $dependency;
+        if (null === $dependency && !class_exists($id)) {
+            throw new ContainerException(
+                'ID should be type of class when Dependency NULL',
+            );
+        }
+
+        $this->dependencies[$id] = $dependency ?? $id;
     }
 
     /**
-     * @throws Exception
+     * @throws ContainerException
      */
     public function get(string $id): mixed
     {
         if (!$this->has($id)) {
-            throw new Exception(sprintf(
+            throw new ContainerException(sprintf(
                 'Unknown dependency [%s]',
                 $id
             ));
@@ -81,7 +83,8 @@ class Container implements ContainerInterface
         foreach ($constructor->getParameters() as $reflectionParameter) {
             $arguments[] = $this->getArgument($reflectionParameter, $id);
         }
-        
+
+        unset($this->arguments[$id]);
         return $this->dependencies[$id] = $reflectionClass->newInstanceArgs($arguments);
     }
     
@@ -91,12 +94,12 @@ class Container implements ContainerInterface
     }
     
     /**
-     * @throws Exception
+     * @throws ContainerException
      */
     public function newInstance(string $class, array $arguments = []): object
     {
         if (!class_exists($class)) {
-            throw new Exception(sprintf(
+            throw new ContainerException(sprintf(
                 'Failed instantiate object of type [%s]',
                 $class
             ));
@@ -125,7 +128,7 @@ class Container implements ContainerInterface
     }
 
     /**
-     * @throws Exception
+     * @throws ContainerException
      */
     protected function checkMethodModifiers(ReflectionMethod $reflectionMethod): void
     {
@@ -133,7 +136,7 @@ class Container implements ContainerInterface
             return;
         }
 
-        throw new Exception(sprintf(
+        throw new ContainerException(sprintf(
             'Method [%s] of class [%s] must has public and not abstract modifiers.',
             $reflectionMethod->getName(),
             $reflectionMethod->getDeclaringClass()->getName()

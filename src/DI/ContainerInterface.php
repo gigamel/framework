@@ -7,19 +7,19 @@ interface ContainerInterface
     public function importArguments(string $source): void;
     
     /**
-     * @throws Exception
+     * @throws ContainerException
      */
-    public function register(string $id, mixed $dependency = null): void;
+    public function set(string $id, mixed $dependency = null): void;
 
     /**
-     * @throws Exception
+     * @throws ContainerException
      */
     public function get(string $id): mixed;
     
     public function has(string $id): bool;
     
     /**
-     * @throws Exception
+     * @throws ContainerException
      */
     public function newInstance(string $class, array $arguments = []): object;
 }

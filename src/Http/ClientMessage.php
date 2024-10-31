@@ -59,7 +59,7 @@ class ClientMessage implements ClientMessageInterface
         return array_key_exists($key, $this->headers);
     }
     
-    public function setSegment(string $name, string $segment): void
+    public function setSegment(string $name, string|int|float $segment): void
     {
         $this->segments[$name] = match (true) {
             ctype_digit($segment) => (int) $segment,

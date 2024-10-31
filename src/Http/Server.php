@@ -3,6 +3,7 @@
 namespace Gigamel\Http;
 
 use Gigamel\Http\Protocol\ServerMessageInterface;
+use Gigamel\Http\Server\ServerInterface;
 
 class Server implements ServerInterface
 {

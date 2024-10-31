@@ -14,7 +14,7 @@ interface ClientMessageInterface
     
     public function hasHeader(string $key): bool;
     
-    public function setSegment(string $name, string $segment): void;
+    public function setSegment(string $name, string|int|float $segment): void;
         
     public function getSegment(string $name): string|int|float|null;
     

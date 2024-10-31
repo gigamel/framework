@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Gigamel\Http;
+namespace Gigamel\Http\Server;
 
 use Gigamel\Http\Protocol\ServerMessageInterface;
 

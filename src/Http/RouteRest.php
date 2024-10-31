@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Gigamel\Http\Router;
+namespace Gigamel\Http;
 
 use function array_filter;
 
