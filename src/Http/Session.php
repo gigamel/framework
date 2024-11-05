@@ -12,20 +12,18 @@ use function session_start;
 
 class Session implements SessionInterface
 {
-    /**
-     * @inheritDoc
-     */
-    public function start(array $options = []): bool
+    protected const string REGEX_KEY = '[a-zA-Z]+([a-zA-Z0-9_][a-zA-Z])?';
+
+    public function __construct(protected readonly array $options = [])
     {
         if (PHP_SESSION_DISABLED === $this->getStatus()) {
             throw new SessionException('Session disabled');
         }
+    }
 
-        if (PHP_SESSION_ACTIVE === $this->getStatus()) {
-            return true;
-        }
-
-        return session_start();
+    public function start(): bool
+    {
+        return session_start($this->options);
     }
 
     public function getStatus(): int
@@ -33,18 +31,11 @@ class Session implements SessionInterface
         return session_status();
     }
 
-    /**
-     * @inheritDoc
-     */
     public function set(string $key, mixed $value): void
     {
-        $key = trim($key);
-        if (!preg_match('/^[a-zA-Z]+([a-zA-Z0-9_][a-zA-Z])?/', $key)) {
-            $this->abort();
-            throw new SessionException('Invalid session key');
+        if ($this->isValidKey($key)) {
+            $_SESSION[$key] = $value;
         }
-
-        $_SESSION[$key] = $value;
     }
 
     public function get(string $key): mixed
@@ -52,16 +43,43 @@ class Session implements SessionInterface
         return $_SESSION[$key] ?? null;
     }
 
-    public function abort(): bool
+    public function exists(string $key): bool
     {
-        if (PHP_SESSION_ACTIVE === $this->getStatus()) {
-            session_abort();
-        }
-        return PHP_SESSION_NONE === $this->getStatus();
+        return isset($_SESSION[$key]);
     }
 
-    public function __destruct()
+    public function remove(string $key): bool
     {
-        $this->abort();
+        if ($this->exists($key)) {
+            unset($_SESSION[$key]);
+        }
+    }
+
+    public function abort(): bool
+    {
+        if ($this->isActive()) {
+            session_abort();
+        }
+        return $this->isInactive();
+    }
+
+    protected function isValidKey(string $key): bool
+    {
+        return (bool) preg_match(sprintf('/^%s$/', self::REGEX_KEY), $key);
+    }
+
+    protected function isActive(): bool
+    {
+        return PHP_SESSION_ACTIVE === $this->getStatus();
+    }
+
+    protected function isDisabled(): bool
+    {
+        return PHP_SESSION_DISABLED === $this->getStatus();
+    }
+
+    protected function isInactive(): bool
+    {
+        return PHP_SESSION_NONE === $this->getStatus();
     }
 }
