@@ -3,6 +3,7 @@
 namespace Gigamel\Http;
 
 use Gigamel\Http\Router\RoutesCollectionInterface;
+use Gigamel\Http\Router\RouteInterface;
 
 class RoutesCollection implements RoutesCollectionInterface
 {
