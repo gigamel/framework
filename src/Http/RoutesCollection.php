@@ -2,6 +2,8 @@
 
 namespace Gigamel\Http;
 
+use Gigamel\Http\Router\RoutesCollectionInterface;
+
 class RoutesCollection implements RoutesCollectionInterface
 {
     /** @var RouteInterface[] */

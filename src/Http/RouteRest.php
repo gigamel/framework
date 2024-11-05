@@ -2,6 +2,8 @@
 
 namespace Gigamel\Http;
 
+use Gigamel\Http\Router\RouteRestInterface;
+
 use function array_filter;
 
 class RouteRest implements RouteRestInterface

@@ -4,6 +4,8 @@ namespace Gigamel\Http;
 
 use Gigamel\Http\Protocol\ClientMessageInterface;
 use Gigamel\Http\Protocol\ClientMessage\Method;
+use Gigamel\Http\Router\RouteInterface;
+use Gigamel\Http\Router\RouteRestInterface;
 
 use function array_filter;
 use function str_replace;

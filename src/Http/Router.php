@@ -6,13 +6,16 @@ use Gigamel\Http\HttpException;
 use Gigamel\Http\Protocol\ClientMessageInterface;
 use Gigamel\Http\Protocol\ClientMessage\Method;
 use Gigamel\Http\Protocol\ServerMessage\Code;
+use Gigamel\Http\Router\RouterInterface;
+use Gigamel\Http\Router\RoutesCollectionInterface;
+use Gigamel\Http\Router\RouteRestInterface;
 
 use function in_array;
 
 class Router implements RouterInterface
 {
     public function __construct(
-        protected CollectionInterface $collection
+        protected RoutesCollectionInterface $collection
     ) {
     }
 
