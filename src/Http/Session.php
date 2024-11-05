@@ -40,6 +40,7 @@ class Session implements SessionInterface
     {
         $key = trim($key);
         if (!preg_match('/^[a-zA-Z]+([a-zA-Z0-9_][a-zA-Z])?/', $key)) {
+            $this->abort();
             throw new SessionException('Invalid session key');
         }
 
