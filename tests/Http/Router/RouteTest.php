@@ -4,6 +4,7 @@ namespace Test\Http\Router;
 
 use Gigamel\Http\ClientMessage;
 use Gigamel\Http\Route;
+use Gigamel\Http\Router\RouteInterface;
 use Gigamel\Http\Router\RouteRestInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -24,7 +25,7 @@ class RouteTest extends TestCase
 
     public function testGenerate(): void
     {
-        $route = new Route('general', '/some/page(/{page})?/more/{id}', 'Handler', ['page' => '\d+', 'id' => '\d+']);
+        $route = $this->makeRoute();
 
         $this->assertEquals(
             $route->generate(['page' => 10, 'id' => 100]),
@@ -40,7 +41,7 @@ class RouteTest extends TestCase
     #[DataProvider('matchDataProvider')]
     public function testMatch(string $uri): void
     {
-        $route = new Route('general', '/some/page(/{page})?/more/{id}', 'Handler', ['page' => '\d+', 'id' => '\d+']);
+        $route = $this->makeRoute();
 
         $clientMessage = $this->createStub(ClientMessage::class);
         $clientMessage
@@ -49,5 +50,18 @@ class RouteTest extends TestCase
 
         $routeRest = $route->match($clientMessage);
         $this->assertInstanceOf(RouteRestInterface::class, $routeRest);
+    }
+
+    private function makeRoute(): RouteInterface
+    {
+        return new Route(
+            'general',
+            '/some/page(/{page})?/more/{id}',
+            'Handler',
+            [
+                'page' => '\d+',
+                'id' => '\d+'
+            ]
+        );
     }
 }
