@@ -23,6 +23,10 @@ class RouterTest extends TestCase
             'shortPath' => [
                 'path' => '/some/page/more/100',
             ],
+            'hardPath' => [
+                'path' => '/some/more/100',
+                'rule' => '/some/(page/{page}/)?more/100',
+            ],
         ];
     }
 
@@ -42,8 +46,10 @@ class RouterTest extends TestCase
     }
 
     #[DataProvider('handleClientMessageDataProvider')]
-    public function testHandleClientMessage(string $path): void
-    {
+    public function testHandleClientMessage(
+        string $path,
+        ?string $rule = null
+    ): void {
         $clientMessage = $this->createStub(ClientMessage::class);
 
         $clientMessage
@@ -54,21 +60,21 @@ class RouterTest extends TestCase
             ->method('getMethod')
             ->willReturn('GET');
 
-        $router = $this->makeRouter();
+        $router = $this->makeRouter($rule);
 
         $routeRest = $router->handleClientMessage($clientMessage);
 
         $this->assertInstanceOf(RouteRestInterface::class, $routeRest);
     }
 
-    private function makeRouter(): RouterInterface
+    private function makeRouter(?string $rule = null): RouterInterface
     {
         $routesCollection = new RoutesCollection();
 
         $routesCollection->add(
             new Route(
                 'general',
-                '/some/page(/{page})?/more/{id}',
+                $rule ?? '/some/page(/{page})?/more/{id}',
                 'Handler',
                 [
                     'page' => '\d+',
