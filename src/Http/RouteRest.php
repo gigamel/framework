@@ -8,6 +8,8 @@ use function array_filter;
 
 class RouteRest implements RouteRestInterface
 {
+    protected array $segments;
+
     public function __construct(
         protected readonly string $handler,
         array $segments = []

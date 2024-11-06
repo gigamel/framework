@@ -8,6 +8,7 @@ use Gigamel\Http\Router\RouteInterface;
 use Gigamel\Http\Router\RouteRestInterface;
 
 use function array_filter;
+use function preg_match;
 use function str_replace;
 
 class Route implements RouteInterface
@@ -53,11 +54,15 @@ class Route implements RouteInterface
     {
         $rule = $this->getRule();
         foreach ($this->tokens as $id => $regEx) {
-            $rule = sprintf('(?P<%s>%s)', $id, $regEx);
+            $rule = str_replace(
+                sprintf('{%s}', $id),
+                sprintf('(?P<%s>%s)', $id, $regEx),
+                $rule
+            );
         }
 
         return (bool) preg_match(sprintf('~^%s$~', $rule), $message->getPath(), $matches)
-            ? new RouteRest($this->getHandler(), $matches)
+            ? new RouteRest($this->getHandler(), array_filter($matches))
             : null;
     }
 
@@ -65,8 +70,14 @@ class Route implements RouteInterface
     {
         $rule = $this->getRule();
         foreach ($segments as $id => $segment) {
-            $rule = str_replace(sprintf('{%s}', $id), $segment, $rule);
+            $rule = str_replace(sprintf('{%s}', $id), (string)$segment, $rule);
         }
+
+        preg_match('(\(/?\{[a-z_-]+\}/?\)\?)', $rule, $matches);
+        foreach ($matches as $match) {
+            $rule = str_replace($match, '', $rule);
+        }
+
         return str_replace([')?', '('], ['', ''], $rule);
     }
 }

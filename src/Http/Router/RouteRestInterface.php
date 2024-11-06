@@ -2,7 +2,7 @@
 
 namespace Gigamel\Http\Router;
 
-interface RouteResultInterface
+interface RouteRestInterface
 {
     public function getHandler(): string;
 
