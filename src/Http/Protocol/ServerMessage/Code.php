@@ -83,7 +83,7 @@ final class Code
     public const int WEB_SERVER_IS_DOWN = 521;
     public const int CONNECTION_TIMED_OUT = 522;
     public const int ORIGIN_IS_UNREACHABLE = 523;
-    public const int A_TIMEOUT_OCCURED = 524;
+    public const int A_TIMEOUT_OCCURRED = 524;
     public const int SSL_HANDSHAKE_FAILED = 525;
     public const int INVALID_SSL_CERTIFICATE = 526;
 

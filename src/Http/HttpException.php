@@ -2,7 +2,6 @@
 
 namespace Gigamel\Http;
 
-use Gigamel\Http\Protocol\ServerMessageInterface;
 use Gigamel\Http\Protocol\ServerMessage\Code;
 use RuntimeException;
 
@@ -14,10 +13,6 @@ class HttpException extends RuntimeException implements HttpExceptionInterface
         protected array $headers = [],
         ?Exception $e = null
     ) {
-        if (!in_array($code, Code::ALLOWED, true)) {
-            $code = Code::UNKNOWN_ERROR;
-        }
-        
         if (empty($message)) {
             $message = Code::TEXT[$code] ?? $message;
         }
