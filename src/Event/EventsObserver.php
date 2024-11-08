@@ -10,7 +10,7 @@ class EventsObserver implements EventsObserverInterface
 {
     protected array $observers = [];
 
-    protected ?ObserverParserInterface $parser;
+    protected ?ObserverParserInterface $parser = null;
 
     public function addObserver(string $eventName, string $observer): void
     {
