@@ -48,7 +48,7 @@ class Session implements SessionInterface
         return isset($_SESSION[$key]);
     }
 
-    public function remove(string $key): bool
+    public function remove(string $key): void
     {
         if ($this->exists($key)) {
             unset($_SESSION[$key]);
