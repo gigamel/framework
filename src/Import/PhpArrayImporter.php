@@ -9,13 +9,13 @@ use function str_ends_with;
 class PhpArrayImporter implements ImportableInterface
 {
     public function __construct(
-        protected readonly string $destination
+        protected readonly string $source
     ) {
     }
 
-    public function import(string $source): array
+    public function import(string $file): array
     {
-        $path = $this->destination . '/' . $source;
+        $path = $this->source . '/' . $file;
         if (file_exists($path) && str_ends_with($path, '.php')) {
             return is_array($a = require_once($path)) ? $a : [];
         }

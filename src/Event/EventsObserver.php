@@ -2,7 +2,7 @@
 
 namespace Gigamel\Event;
 
-use Gigamel\Event\Argument\ObserverParserInterface;
+use Gigamel\Argument\ConstructorParserInterface;
 
 use function array_key_exists;
 
@@ -10,7 +10,7 @@ class EventsObserver implements EventsObserverInterface
 {
     protected array $observers = [];
 
-    protected ?ObserverParserInterface $parser = null;
+    protected ?ConstructorParserInterface $parser = null;
 
     public function addObserver(string $eventName, string $observer): void
     {
@@ -34,7 +34,7 @@ class EventsObserver implements EventsObserverInterface
         unset($this->observers[$eventName]);
     }
 
-    public function setObserverParser(ObserverParserInterface $parser): void
+    public function setObserverParser(ConstructorParserInterface $parser): void
     {
         $this->parser = $parser;
     }

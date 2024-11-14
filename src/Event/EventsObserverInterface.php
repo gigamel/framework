@@ -2,7 +2,7 @@
 
 namespace Gigamel\Event;
 
-use Gigamel\Event\Argument\ObserverParserInterface;
+use Gigamel\Argument\ConstructorParserInterface;
 
 interface EventsObserverInterface
 {
@@ -10,5 +10,5 @@ interface EventsObserverInterface
 
     public function observe(object $event, ?string $eventName = null): void;
 
-    public function setObserverParser(ObserverParserInterface $parser): void;
+    public function setObserverParser(ConstructorParserInterface $parser): void;
 }

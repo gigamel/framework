@@ -4,5 +4,5 @@ namespace Gigamel\Import;
 
 interface ImportableInterface
 {
-    public function import(string $source): array;
+    public function import(string $file): array;
 }

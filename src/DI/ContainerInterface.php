@@ -2,24 +2,26 @@
 
 namespace Gigamel\DI;
 
+use InvalidArgumentException;
+
 interface ContainerInterface
 {
-    public function importArguments(string $source): void;
+    public function importArguments(string $file): void;
     
     /**
-     * @throws ContainerException
+     * @throws InvalidArgumentException
      */
     public function set(string $id, mixed $dependency = null): void;
 
     /**
-     * @throws ContainerException
+     * @throws InvalidArgumentException
      */
     public function get(string $id): mixed;
     
     public function has(string $id): bool;
     
     /**
-     * @throws ContainerException
+     * @throws InvalidArgumentException
      */
     public function newInstance(string $class, array $arguments = []): object;
 }

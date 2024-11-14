@@ -2,8 +2,9 @@
 
 namespace Gigamel\DI;
 
-use Gigamel\DI\Argument\ImporterInterface;
-use Gigamel\DI\Argument\PhpArrayImporter;
+use Gigamel\Import\ImportableInterface;
+use Gigamel\Import\PhpArrayImporter;
+use InvalidArgumentException;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionParameter;
@@ -20,35 +21,28 @@ class Container implements ContainerInterface
     
     protected array $arguments = [];
     
-    protected ImporterInterface $importer;
+    protected ImportableInterface $importer;
     
-    public function __construct(?ImporterInterface $importer = null)
+    public function __construct(?ImportableInterface $importer = null)
     {
         $this->importer = $importer ?? new PhpArrayImporter();
     }
     
-    public function importArguments(string $source): void
+    public function importArguments(string $file): void
     {
-        $arguments = $this->importer->import($source);
+        $arguments = $this->importer->import($file);
         if ($arguments) {
             $this->arguments = array_replace_recursive($this->arguments, $arguments);
         }
     }
 
     /**
-     * @throws ContainerException
+     * @throws InvalidArgumentException
      */
     public function set(string $id, mixed $dependency = null): void
     {
-        if ($this->has($id)) {
-            throw new ContainerException(sprintf(
-                'Dependency [%s] already exists',
-                $id
-            ));
-        }
-
         if (null === $dependency && !class_exists($id)) {
-            throw new ContainerException(
+            throw new InvalidArgumentException(
                 'ID should be type of class when Dependency NULL',
             );
         }
@@ -57,12 +51,12 @@ class Container implements ContainerInterface
     }
 
     /**
-     * @throws ContainerException
+     * @throws InvalidArgumentException
      */
     public function get(string $id): mixed
     {
         if (!$this->has($id)) {
-            throw new ContainerException(sprintf(
+            throw new InvalidArgumentException(sprintf(
                 'Unknown dependency [%s]',
                 $id
             ));
@@ -94,12 +88,12 @@ class Container implements ContainerInterface
     }
     
     /**
-     * @throws ContainerException
+     * @throws InvalidArgumentException
      */
     public function newInstance(string $class, array $arguments = []): object
     {
         if (!class_exists($class)) {
-            throw new ContainerException(sprintf(
+            throw new InvalidArgumentException(sprintf(
                 'Failed instantiate object of type [%s]',
                 $class
             ));
@@ -124,11 +118,12 @@ class Container implements ContainerInterface
         } elseif ($reflectionParameter->isDefaultValueAvailable()) {
             $argument = $reflectionParameter->getDefaultValue();
         }
+
         return $argument ?? null;
     }
 
     /**
-     * @throws ContainerException
+     * @throws InvalidArgumentException
      */
     protected function checkMethodModifiers(ReflectionMethod $reflectionMethod): void
     {
@@ -136,7 +131,7 @@ class Container implements ContainerInterface
             return;
         }
 
-        throw new ContainerException(sprintf(
+        throw new InvalidArgumentException(sprintf(
             'Method [%s] of class [%s] must has public and not abstract modifiers.',
             $reflectionMethod->getName(),
             $reflectionMethod->getDeclaringClass()->getName()
