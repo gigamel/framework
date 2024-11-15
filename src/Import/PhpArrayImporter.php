@@ -8,16 +8,10 @@ use function str_ends_with;
 
 class PhpArrayImporter implements ImportableInterface
 {
-    public function __construct(
-        protected readonly string $source
-    ) {
-    }
-
     public function import(string $file): array
     {
-        $path = $this->source . '/' . $file;
-        if (file_exists($path) && str_ends_with($path, '.php')) {
-            return is_array($a = require_once($path)) ? $a : [];
+        if (file_exists($file) && str_ends_with($file, '.php')) {
+            return is_array($a = require_once($file)) ? $a : [];
         }
         return [];
     }
