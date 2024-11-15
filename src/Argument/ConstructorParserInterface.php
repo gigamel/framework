@@ -4,7 +4,7 @@ namespace Gigamel\Argument;
 
 use InvalidArgumentException;
 
-interface ConstructParserInterface
+interface ConstructorParserInterface
 {
     /**
      * @throws InvalidArgumentException
