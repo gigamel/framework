@@ -4,5 +4,10 @@ namespace Gigamel\Form;
 
 interface FormBuilderInterface
 {
-    public function makeForm(array $attributes = []): FormInterface;
+    public function makeForm(
+        string $method,
+        string $action = '',
+        array $attributes = [],
+        bool $autocomplete = false
+    ): FormInterface;
 }

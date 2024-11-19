@@ -4,8 +4,12 @@ namespace Gigamel\Form;
 
 class FormBuilder implements FormBuilderInterface
 {
-    public function makeForm(array $attributes = []): FormInterface
-    {
-        return new Form($attributes);
+    public function makeForm(
+        string $method,
+        string $action = '',
+        array $attributes = [],
+        bool $autocomplete = false
+    ): FormInterface {
+        return new Form($method, $action, $attributes, $autocomplete);
     }
 }
