@@ -2,30 +2,47 @@
 
 namespace Gigamel\Form\Field;
 
-use Gigamel\Form\Attributes;
-use Gigamel\Form\FieldInterface;
+use Gigamel\Form\AbstractTag;
+use Gigamel\Form\ButtonInterface;
 
-use function array_replace;
 use function sprintf;
 
-class Button implements FieldInterface
+class Button extends AbstractTag implements ButtonInterface
 {
+    protected const string ATTR_PLACEHOLDER = 'placeholder';
+
+    protected const string ATTR_NAME = 'name';
+
     protected array $attributes = [];
 
     public function __construct(
-        protected string $placeholder = 'Save',
+        string $name,
+        protected string $label = 'Save',
         array $attributes = []
     ) {
+        $this->attributes[self::ATTR_NAME] = $name;
         $this->setAttributes($attributes);
+    }
+
+    public function getName(): string
+    {
+        return $this->attributes[self::ATTR_NAME];
     }
 
     public function render(): string
     {
-        return sprintf('<button%s>%s</button>', Attributes::render($this->attributes), $this->placeholder);
+        return sprintf(
+            '<button%s>%s</button>',
+            $this->renderAttributes(),
+            $this->label
+        );
     }
 
-    public function setAttributes(array $attributes): void
+    protected function getExcludedAttributes(): array
     {
-        $this->attributes = array_replace($this->attributes, $attributes);
+        return [
+            self::ATTR_NAME,
+            self::ATTR_PLACEHOLDER,
+        ];
     }
 }

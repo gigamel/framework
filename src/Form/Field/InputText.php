@@ -2,31 +2,50 @@
 
 namespace Gigamel\Form\Field;
 
-use Attribute;
-use Gigamel\Form\Attributes;
-use Gigamel\Form\FieldInterface;
+use Gigamel\Form\AbstractStringableFieldInterface;
 
 use function array_replace;
 use function sprintf;
 
-#[Attribute]
-class InputText implements FieldInterface
+class InputText extends AbstractStringableFieldInterface
 {
+    protected const string ATTR_TYPE = 'type';
+
+    protected const string ATTR_NAME = 'name';
+
+    protected const string ATTR_VALUE = 'value';
+
     protected array $attributes = [];
 
     public function __construct(
+        string $name,
         array $attributes = []
     ) {
+        $this->attributes[self::ATTR_NAME] = $name;
+        $this->attributes[self::ATTR_TYPE] = 'text';
         $this->setAttributes($attributes);
+    }
+
+    public function getName(): string
+    {
+        return $this->attributes[self::ATTR_NAME];
     }
 
     public function render(): string
     {
-        return sprintf('<input%s/>', Attributes::render($this->attributes));
+        return sprintf(
+            '<input value="%s"%s/>',
+            $this->value,
+            $this->renderAttributes()
+        );
     }
 
-    public function setAttributes(array $attributes): void
+    protected function getExcludedAttributes(): array
     {
-        $this->attributes = array_replace($this->attributes, $attributes);
+        return [
+            self::ATTR_NAME,
+            self::ATTR_TYPE,
+            self::ATTR_VALUE,
+        ];
     }
 }

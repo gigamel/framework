@@ -2,11 +2,11 @@
 
 namespace Gigamel\Form;
 
-interface FormInterface
+interface FormInterface extends TagInterface
 {
-    public function fromEntity(string $entity): self;
+    public function field(FieldInterface $field): FormInterface;
 
-    public function field(FieldInterface $field, ?string $name = null): self;
+    public function valid(): bool;
 
-    public function render(): string;
+    public function sent(): bool;
 }

@@ -2,34 +2,42 @@
 
 namespace Gigamel\Form\Field;
 
-use Attribute;
-use Gigamel\Form\Attributes;
-use Gigamel\Form\FieldInterface;
+use Gigamel\Form\AbstractStringableFieldInterface;
 
-use function array_replace;
 use function sprintf;
 
-#[Attribute]
-class Textarea implements FieldInterface
+class Textarea extends AbstractStringableFieldInterface
 {
+    protected const string ATTR_NAME = 'name';
+
     protected array $attributes = [];
 
     public function __construct(
+        string $name,
         array $attributes = []
     ) {
+        $this->attributes[self::ATTR_NAME] = $name;
         $this->setAttributes($attributes);
+    }
+
+    public function getName(): string
+    {
+        return $this->attributes[self::ATTR_NAME];
     }
 
     public function render(): string
     {
         return sprintf(
-            '<textarea%s></textarea>',
-            Attributes::render($this->attributes)
+            '<textarea%s>%s</textarea>',
+            $this->renderAttributes(),
+            $this->value
         );
     }
 
-    public function setAttributes(array $attributes): void
+    protected function getExcludedAttributes(): array
     {
-        $this->attributes = array_replace($this->attributes, $attributes);
+        return [
+            self::ATTR_NAME,
+        ];
     }
 }

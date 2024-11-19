@@ -2,59 +2,45 @@
 
 namespace Gigamel\Form;
 
-use Error;
-use ReflectionAttribute;
-use ReflectionClass;
-use ReflectionProperty;
+use function in_array;
+use function sprintf;
 
-use function class_exists;
-
-class Form implements FormInterface
+class Form extends AbstractTag implements FormInterface
 {
+    protected const string ATTR_METHOD = 'method';
+
+    protected const string ATTR_ACTION = 'action';
+
+    protected const string ATTR_AUTOCOMPLETE = 'autocomplete';
+
     protected array $fields = [];
 
+    protected array $buttonKeys = [];
+
     public function __construct(
-        protected array $attributes = []
+        string $method,
+        string $action = '',
+        array $attributes = [],
+        bool $autocomplete = false
     ) {
+        $this->attributes[self::ATTR_METHOD] = $method;
+        $this->attributes[self::ATTR_ACTION] = $action;
+
+        if (!$autocomplete) {
+            $this->attributes[self::ATTR_AUTOCOMPLETE] = 'off';
+        }
+
+        $this->setAttributes($attributes);
     }
 
-    public function fromEntity(string $entity): FormInterface
+    public function field(FieldInterface $field): FormInterface
     {
-        if (!class_exists($entity)) {
-            return $this;
+        $this->fields[$field->getName()] = $field;
+
+        if ($field instanceof ButtonInterface) {
+            $this->buttonKeys[] = $field->getName();
         }
 
-        $reflectionClass = new ReflectionClass($entity);
-        if ($reflectionClass->isReadonly() || $reflectionClass->isAbstract()) {
-            return $this;
-        }
-
-        foreach ($reflectionClass->getProperties(ReflectionProperty::IS_PUBLIC) as $reflectionProperty) {
-            if ($reflectionProperty->isStatic() || $reflectionProperty->isReadonly()) {
-                continue;
-            }
-
-            $attributes = $reflectionProperty->getAttributes(FieldInterface::class, ReflectionAttribute::IS_INSTANCEOF);
-            if (!$attributes) {
-                continue;
-            }
-
-            try {
-                $this->field($attributes[0]->newInstance());
-            } catch (Error) {
-                continue;
-            }
-        }
-
-        return $this;
-    }
-
-    public function field(FieldInterface $field, ?string $name = null): self
-    {
-        if ($name) {
-            $field->setAttributes(['name' => $name]);
-        }
-        $this->fields[] = $field;
         return $this;
     }
 
@@ -69,6 +55,60 @@ class Form implements FormInterface
             $fields .= $field->render();
         }
 
-        return sprintf('<form%s>%s</form>', Attributes::render($this->attributes), $fields);
+        return sprintf(
+            '<form method="%s" action="%s"%s>%s</form>',
+            $this->attributes[self::ATTR_METHOD],
+            $this->attributes[self::ATTR_ACTION],
+            $this->renderAttributes(),
+            $fields
+        );
+    }
+
+    public function handleClientMessage(): void
+    {
+        if (!$this->sent()) {
+            return;
+        }
+
+        $data = $_POST;
+
+        foreach ($this->fields as $field) {
+            if (
+                $field instanceof StringableDataInterface
+                && array_key_exists($field->getName(), $data)
+            ) {
+                $field->setValue($data[$field->getName()]);
+            }
+        }
+    }
+
+    public function valid(): bool
+    {
+        if (!$this->fields) {
+            return false;
+        }
+
+        $valid = true;
+        foreach ($this->fields as $field) {
+            if ($field instanceof TypeFieldInterface) {
+                $valid = $valid && $field->valid();
+            }
+        }
+
+        return $valid;
+    }
+
+    public function sent(): bool
+    {
+        return $_SERVER['REQUEST_METHOD'] === $this->attributes[self::ATTR_METHOD];
+    }
+
+    protected function getExcludedAttributes(): array
+    {
+        return [
+            self::ATTR_METHOD,
+            self::ATTR_ACTION,
+            self::ATTR_AUTOCOMPLETE,
+        ];
     }
 }

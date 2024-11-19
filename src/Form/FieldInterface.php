@@ -2,9 +2,7 @@
 
 namespace Gigamel\Form;
 
-interface FieldInterface
+interface FieldInterface extends TagInterface
 {
-    public function render(): string;
-
-    public function setAttributes(array $attributes): void;
+    public function getName(): string;
 }
