@@ -1,51 +1,54 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Gigamel\Form\Field;
 
-use Gigamel\Form\AbstractStringableFieldInterface;
+use Gigamel\Form\AbstractTag;
+use Gigamel\Form\Attribute;
+use Gigamel\Form\FieldInterface;
+use Gigamel\Form\RowableFieldInterface;
 
-use function array_replace;
 use function sprintf;
+use function str_replace;
 
-class InputText extends AbstractStringableFieldInterface
+class InputText extends AbstractTag implements FieldInterface, RowableFieldInterface
 {
-    protected const string ATTR_TYPE = 'type';
-
-    protected const string ATTR_NAME = 'name';
-
-    protected const string ATTR_VALUE = 'value';
-
-    protected array $attributes = [];
-
     public function __construct(
         string $name,
         array $attributes = []
     ) {
-        $this->attributes[self::ATTR_NAME] = $name;
-        $this->attributes[self::ATTR_TYPE] = 'text';
+        $this->attributes[Attribute::NAME] = $name;
+        $this->attributes[Attribute::TYPE] = 'text';
+        $this->attributes[Attribute::VALUE] = '';
         $this->setAttributes($attributes);
     }
 
     public function getName(): string
     {
-        return $this->attributes[self::ATTR_NAME];
+        return $this->attributes[Attribute::NAME];
     }
 
-    public function render(): string
+    public function setValue(string $value): void
     {
-        return sprintf(
-            '<input value="%s"%s/>',
-            $this->value,
-            $this->renderAttributes()
+        $this->attributes[Attribute::VALUE] = $value;
+    }
+
+    public function render(string $contents): string
+    {
+        return str_replace(
+            sprintf('{{ field_%s }}', $this->getName()),
+            sprintf('<input%s/>', $this->renderAttributes()),
+            $contents
         );
     }
 
-    protected function getExcludedAttributes(): array
+    protected function getAttributesExcluded(): array
     {
         return [
-            self::ATTR_NAME,
-            self::ATTR_TYPE,
-            self::ATTR_VALUE,
+            Attribute::NAME,
+            Attribute::TYPE,
+            Attribute::VALUE,
         ];
     }
 }

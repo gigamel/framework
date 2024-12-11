@@ -2,22 +2,23 @@
 
 declare(strict_types=1);
 
-namespace Gigamel\Form\Field;
+namespace App\Form\Field;
 
-use Gigamel\Form\AbstractTag;
-use Gigamel\Form\Attribute;
-use Gigamel\Form\FieldInterface;
-use Gigamel\Form\RowableFieldInterface;
+use App\Form\AbstractTag;
+use App\Form\Attribute;
+use App\Form\FieldInterface;
+use App\Form\RowableFieldInterface;
 
 use function sprintf;
 use function str_replace;
 
-class Textarea extends AbstractTag implements FieldInterface, RowableFieldInterface
+class RowableSelect extends AbstractTag implements FieldInterface, RowableFieldInterface
 {
     protected string $value = '';
 
     public function __construct(
         string $name,
+        protected array $options = [],
         array $attributes = []
     ) {
         $this->attributes[Attribute::NAME] = $name;
@@ -38,16 +39,30 @@ class Textarea extends AbstractTag implements FieldInterface, RowableFieldInterf
     {
         return str_replace(
             sprintf('{{ field_%s }}', $this->getName()),
-            sprintf('<textarea%s>%s</textarea>', $this->renderAttributes(), $this->value),
+            sprintf('<select%s>%s</select>', $this->renderAttributes(), $this->renderOptions()),
             $contents
         );
+    }
+
+    protected function renderOptions(): string
+    {
+        $options = '';
+        foreach ($this->options as $value => $label) {
+            $options .= sprintf(
+                '<option value="%s"%s>%s</option>',
+                $value,
+                ($this->value === (string) $value) ? ' selected' : '',
+                $label
+            );
+        }
+        return $options;
     }
 
     protected function getAttributesExcluded(): array
     {
         return [
+            Attribute::MULTIPLE,
             Attribute::NAME,
-            Attribute::TYPE,
             Attribute::VALUE,
         ];
     }

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Gigamel\Form;
 
@@ -11,8 +13,20 @@ abstract class AbstractTag implements TagInterface
 
     public function setAttribute(string $name, string $value): void
     {
-        if (!in_array($name, $this->getExcludedAttributes(), true)) {
+        if (!in_array($name, $this->getAttributesExcluded(), true)) {
             $this->attributes[$name] = $value;
+        }
+    }
+
+    /**
+     * @return string[]
+     */
+    abstract protected function getAttributesExcluded(): array;
+
+    protected function setAttributes(array $attributes): void
+    {
+        foreach ($attributes as $name => $value) {
+            $this->setAttribute($name, $value);
         }
     }
 
@@ -24,13 +38,4 @@ abstract class AbstractTag implements TagInterface
         }
         return $attributes;
     }
-
-    protected function setAttributes(array $attributes): void
-    {
-        foreach ($attributes as $name => $value) {
-            $this->setAttribute($name, $value);
-        }
-    }
-
-    abstract protected function getExcludedAttributes(): array;
 }

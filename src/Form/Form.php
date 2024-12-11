@@ -1,114 +1,87 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Gigamel\Form;
 
-use function in_array;
+use Gigamel\Http\Protocol\ClientMessageInterface;
+
+use function array_key_exists;
+use function file_exists;
+use function file_get_contents;
 use function sprintf;
 
 class Form extends AbstractTag implements FormInterface
 {
-    protected const string ATTR_METHOD = 'method';
-
-    protected const string ATTR_ACTION = 'action';
-
-    protected const string ATTR_AUTOCOMPLETE = 'autocomplete';
-
     protected array $fields = [];
 
-    protected array $buttonKeys = [];
-
     public function __construct(
-        string $method,
-        string $action = '',
+        protected string $method,
+        protected string $action = '',
         array $attributes = [],
         bool $autocomplete = false
     ) {
-        $this->attributes[self::ATTR_METHOD] = $method;
-        $this->attributes[self::ATTR_ACTION] = $action;
+        $this->attributes[Attribute::METHOD] = $method;
+        $this->attributes[Attribute::ACTION] = $action;
 
         if (!$autocomplete) {
-            $this->attributes[self::ATTR_AUTOCOMPLETE] = 'off';
+            $this->attributes[Attribute::AUTOCOMPLETE] = 'off';
         }
 
         $this->setAttributes($attributes);
     }
 
-    public function field(FieldInterface $field): FormInterface
+    public function handle(ClientMessageInterface $message): bool
     {
-        $this->fields[$field->getName()] = $field;
-
-        if ($field instanceof ButtonInterface) {
-            $this->buttonKeys[] = $field->getName();
-        }
-
-        return $this;
-    }
-
-    public function render(): string
-    {
-        if (!$this->fields) {
-            return '';
-        }
-
-        $fields = '';
-        foreach ($this->fields as $field) {
-            $fields .= $field->render();
-        }
-
-        return sprintf(
-            '<form method="%s" action="%s"%s>%s</form>',
-            $this->attributes[self::ATTR_METHOD],
-            $this->attributes[self::ATTR_ACTION],
-            $this->renderAttributes(),
-            $fields
-        );
-    }
-
-    public function handleClientMessage(): void
-    {
-        if (!$this->sent()) {
-            return;
-        }
-
-        $data = $_POST;
-
-        foreach ($this->fields as $field) {
-            if (
-                $field instanceof StringableDataInterface
-                && array_key_exists($field->getName(), $data)
-            ) {
-                $field->setValue($data[$field->getName()]);
-            }
-        }
-    }
-
-    public function valid(): bool
-    {
-        if (!$this->fields) {
+        if (!$message->isMethod($this->attributes[Attribute::METHOD])) {
             return false;
         }
 
-        $valid = true;
-        foreach ($this->fields as $field) {
-            if ($field instanceof TypeFieldInterface) {
-                $valid = $valid && $field->valid();
+        foreach ($this->fields as $name => $field) {
+            if ($field instanceof RowableFieldInterface) {
+                $field->setValue($_POST[$name] ?? '');
             }
         }
 
-        return $valid;
+        return true;
     }
 
-    public function sent(): bool
+    public function field(FieldInterface $field): FormInterface
     {
-        return $_SERVER['REQUEST_METHOD'] === $this->attributes[self::ATTR_METHOD];
+        $this->fields[$field->getName()] = $field;
+        return $this;
     }
 
-    protected function getExcludedAttributes(): array
+    public function render(string $view): string
+    {
+         if (!file_exists($view) || !$this->fields) {
+             return '';
+         }
+
+         return sprintf(
+             '<form%s>%s</form>',
+             $this->renderAttributes(),
+             $this->renderFields(file_get_contents($view) ?: '')
+         );
+    }
+
+    protected function renderFields(string $contents): string
+    {
+        foreach ($this->fields as $field) {
+            $contents = $field->render($contents);
+        }
+        return $contents;
+    }
+
+    protected function getAttributesExcluded(): array
     {
         return [
-            self::ATTR_METHOD,
-            self::ATTR_ACTION,
-            self::ATTR_AUTOCOMPLETE,
+            Attribute::ACTION,
+            Attribute::AUTOCOMPLETE,
+            Attribute::METHOD,
+            Attribute::NAME,
+            Attribute::TYPE,
+            Attribute::VALUE,
         ];
     }
 }
