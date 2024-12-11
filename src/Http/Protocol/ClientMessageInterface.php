@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Gigamel\Http\Protocol;
 
@@ -19,4 +21,10 @@ interface ClientMessageInterface
     public function getSegment(string $name): string|int|float|null;
     
     public function hasSegment(string $name): bool;
+
+    public function isMethod(string $method): bool;
+
+    public function getUriParam(string $name, mixed $default = null): mixed;
+
+    public function getBodyParam(string $name, mixed $default = null): mixed;
 }
