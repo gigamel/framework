@@ -27,4 +27,6 @@ interface ClientMessageInterface
     public function getUriParam(string $name, mixed $default = null): mixed;
 
     public function getBodyParam(string $name, mixed $default = null): mixed;
+
+    public function getFormParam(string $name, mixed $default = null): mixed;
 }

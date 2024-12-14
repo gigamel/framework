@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Gigamel\Form;
 
 use Gigamel\Http\Protocol\ClientMessageInterface;
-use Gigamel\Http\Protocol\ClientMessage\Method;
 
 use function array_key_exists;
 use function file_exists;
@@ -40,11 +39,7 @@ class Form extends AbstractTag implements FormInterface
 
         foreach ($this->fields as $name => $field) {
             if ($field instanceof RowableFieldInterface) {
-                $field->setValue(
-                    $message->isMethod(Method::GET)
-                        ? $message->getUriParam($field->getName(), '')
-                        : $message->getBodyParam($field->getName(), '')
-                );
+                $field->setValue($message->getFormParam($field->getName(), ''));
             }
         }
 

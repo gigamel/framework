@@ -23,26 +23,24 @@ use function ucwords;
 
 class ClientMessage implements ClientMessageInterface
 {
-    /** @var string[] */
+    protected Uri $uri;
+
     protected array $headers = [];
 
-    /** @var string[] */
     protected array $segments = [];
-
-    protected Uri $uri;
 
     protected array $bodyParams = [];
     
     public function __construct()
     {
+        $this->uri = new Uri($_SERVER['REQUEST_URI'] ?? '/');
         $this->parseHeaders();
-        $this->uri = new Uri($_SERVER['REQUEST_URI']);
         $this->parseBodyParams();
     }
     
     public function getMethod(): string
     {
-        return strtoupper($_SERVER['REQUEST_METHOD']);
+        return $_SERVER['REQUEST_METHOD'];
     }
     
     public function getPath(): string
@@ -99,6 +97,11 @@ class ClientMessage implements ClientMessageInterface
         return $this->bodyParams[$name] ?? $default;
     }
 
+    public function getFormParam(string $name, mixed $default = null): mixed
+    {
+        return $_POST[$name] ?? $default;
+    }
+
     protected function parseHeaders(): void
     {
         foreach ($_SERVER as $key => $value) {
@@ -108,31 +111,26 @@ class ClientMessage implements ClientMessageInterface
         }
     }
 
-    protected function normalizeHeader(string $key): string
-    {
-        return str_replace('_', '-', ucwords(strtolower($key), '_'));
-    }
-
     protected function parseBodyParams(): void
     {
         if (!$this->hasHeader(Header::CONTENT_TYPE)) {
-            $this->bodyParams = $_POST;
             return;
         }
 
-        $contentType = $this->getHeader(Header::CONTENT_TYPE);
-
-        if (str_contains($contentType, 'application/json')) {
-            try {
-                $this->bodyParams = json_decode(file_get_contents('php://input') ?: '', true, 512, JSON_THROW_ON_ERROR);
-                return;
-            } catch (JsonException) {
-                // nothing to do
-            }
+        $contentType = strtolower($this->getHeader(Header::CONTENT_TYPE));
+        if (!str_contains($contentType, 'application/json')) {
+            return;
         }
 
-        if ($this->isMethod(Method::POST)) {
-            $this->bodyParams = $_POST;
+        try {
+            $this->bodyParams = json_decode(file_get_contents('php://input') ?: '', true, 512, JSON_THROW_ON_ERROR);
+        } catch (JsonException) {
+            // nothing to do
         }
+    }
+
+    protected function normalizeHeader(string $key): string
+    {
+        return str_replace('_', '-', ucwords(strtolower($key), '_'));
     }
 }
