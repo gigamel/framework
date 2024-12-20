@@ -24,7 +24,7 @@ interface RouteInterface
      */
     public function getMethods(): array;
 
-    public function match(ClientMessageInterface $message): ?RouteRestInterface;
+    public function match(ClientMessageInterface $message): ?RouteShardInterface;
 
     public function generate(array $segments = []): string;
 }

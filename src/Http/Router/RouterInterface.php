@@ -12,7 +12,7 @@ interface RouterInterface
     /**
      * @throws HttpExceptionInterface
      */
-    public function handleClientMessage(ClientMessageInterface $message): RouteRestInterface;
+    public function handleClientMessage(ClientMessageInterface $message): RouteShardInterface;
 
     /**
      * @throws HttpExceptionInterface

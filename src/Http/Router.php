@@ -10,7 +10,7 @@ use Gigamel\Http\Protocol\ClientMessage\Method;
 use Gigamel\Http\Protocol\ServerMessage\Code;
 use Gigamel\Http\Router\RouterInterface;
 use Gigamel\Http\Router\RoutesCollectionInterface;
-use Gigamel\Http\Router\RouteRestInterface;
+use Gigamel\Http\Router\RouteShardInterface;
 
 use function in_array;
 
@@ -24,15 +24,15 @@ class Router implements RouterInterface
     /**
      * @throws inheritDoc
      */
-    public function handleClientMessage(ClientMessageInterface $message): RouteRestInterface
+    public function handleClientMessage(ClientMessageInterface $message): RouteShardInterface
     {
         foreach ($this->collection->getCollection() as $route) {
             if (!in_array($message->getMethod(), $route->getMethods(), true)) {
                 continue;
             }
 
-            if ($routeRest = $route->match($message)) {
-                return $routeRest;
+            if ($routeShard = $route->match($message)) {
+                return $routeShard;
             }
         }
 

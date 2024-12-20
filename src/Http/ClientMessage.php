@@ -106,7 +106,7 @@ class ClientMessage implements ClientMessageInterface
     {
         foreach ($_SERVER as $key => $value) {
             if (0 === strpos($key, 'HTTP_')) {
-                $this->headers[$this->normalizeHeader(substr($key, 5))] = $value;
+                $this->headers[Header::normalize(substr($key, 5))] = $value;
             }
         }
     }
@@ -127,10 +127,5 @@ class ClientMessage implements ClientMessageInterface
         } catch (JsonException) {
             // nothing to do
         }
-    }
-
-    protected function normalizeHeader(string $key): string
-    {
-        return str_replace('_', '-', ucwords(strtolower($key), '_'));
     }
 }

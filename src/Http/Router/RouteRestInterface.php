@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Gigamel\Http\Router;
 
-interface RouteRestInterface
+interface RouteShardInterface
 {
     public function getHandler(): string;
 

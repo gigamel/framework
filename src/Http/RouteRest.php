@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Gigamel\Http;
 
-use Gigamel\Http\Router\RouteRestInterface;
+use Gigamel\Http\Router\RouteShardInterface;
 
 use function array_filter;
 
-class RouteRest implements RouteRestInterface
+class RouteShard implements RouteShardInterface
 {
     protected array $segments;
 

@@ -7,7 +7,7 @@ namespace Gigamel\Http;
 use Gigamel\Http\Protocol\ClientMessageInterface;
 use Gigamel\Http\Protocol\ClientMessage\Method;
 use Gigamel\Http\Router\RouteInterface;
-use Gigamel\Http\Router\RouteRestInterface;
+use Gigamel\Http\Router\RouteShardInterface;
 
 use function array_filter;
 use function preg_match;
@@ -52,7 +52,7 @@ class Route implements RouteInterface
         return $this->methods;
     }
 
-    public function match(ClientMessageInterface $message): ?RouteRestInterface
+    public function match(ClientMessageInterface $message): ?RouteShardInterface
     {
         $rule = $this->getRule();
         foreach ($this->tokens as $id => $regEx) {
@@ -64,7 +64,7 @@ class Route implements RouteInterface
         }
 
         return (bool) preg_match(sprintf('~^%s$~', $rule), $message->getPath(), $matches)
-            ? new RouteRest($this->getHandler(), array_filter($matches))
+            ? new RouteShard($this->getHandler(), array_filter($matches))
             : null;
     }
 
