@@ -7,6 +7,7 @@ namespace Gigamel\Frontend\View\Driver;
 use Gigamel\Frontend\View\RenderDriverInterface;
 
 use function ob_get_clean;
+use function ob_start;
 use function str_ends_with;
 
 final class PhpRenderDriver implements RenderDriverInterface

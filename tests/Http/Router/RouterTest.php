@@ -7,7 +7,7 @@ use Gigamel\Http\Route;
 use Gigamel\Http\Router;
 use Gigamel\Http\Router\RouterInterface;
 use Gigamel\Http\Router\RouteInterface;
-use Gigamel\Http\Router\RouteRestInterface;
+use Gigamel\Http\Router\RouteShardInterface;
 use Gigamel\Http\RoutesCollection;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -62,9 +62,9 @@ class RouterTest extends TestCase
 
         $router = $this->makeRouter($rule);
 
-        $routeRest = $router->handleClientMessage($clientMessage);
+        $routeShard = $router->handleClientMessage($clientMessage);
 
-        $this->assertInstanceOf(RouteRestInterface::class, $routeRest);
+        $this->assertInstanceOf(RouteShardInterface::class, $routeShard);
     }
 
     private function makeRouter(?string $rule = null): RouterInterface

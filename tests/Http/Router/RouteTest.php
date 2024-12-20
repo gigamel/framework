@@ -5,7 +5,7 @@ namespace Test\Http\Router;
 use Gigamel\Http\ClientMessage;
 use Gigamel\Http\Route;
 use Gigamel\Http\Router\RouteInterface;
-use Gigamel\Http\Router\RouteRestInterface;
+use Gigamel\Http\Router\RouteShardInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
@@ -48,8 +48,8 @@ class RouteTest extends TestCase
             ->method('getPath')
             ->willReturn($uri);
 
-        $routeRest = $route->match($clientMessage);
-        $this->assertInstanceOf(RouteRestInterface::class, $routeRest);
+        $routeShard = $route->match($clientMessage);
+        $this->assertInstanceOf(RouteShardInterface::class, $routeShard);
     }
 
     private function makeRoute(): RouteInterface

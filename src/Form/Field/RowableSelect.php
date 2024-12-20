@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Form\Field;
+namespace Gigamel\Form\Field;
 
-use App\Form\AbstractTag;
-use App\Form\Attribute;
-use App\Form\FieldInterface;
-use App\Form\RowableFieldInterface;
+use Gigamel\Form\AbstractTag;
+use Gigamel\Form\Attribute;
+use Gigamel\Form\FieldInterface;
+use Gigamel\Form\RowableFieldInterface;
 
 use function sprintf;
 use function str_replace;
