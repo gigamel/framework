@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Gigamel\Http;
+namespace Slon\Http;
 
 use function parse_url;
 

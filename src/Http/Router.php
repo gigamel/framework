@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Gigamel\Http;
+namespace Slon\Http;
 
-use Gigamel\Http\HttpException;
-use Gigamel\Http\Protocol\ClientMessageInterface;
-use Gigamel\Http\Protocol\ClientMessage\Method;
-use Gigamel\Http\Protocol\ServerMessage\Code;
-use Gigamel\Http\Router\RouterInterface;
-use Gigamel\Http\Router\RoutesCollectionInterface;
-use Gigamel\Http\Router\RouteShardInterface;
+use Slon\Http\HttpException;
+use Slon\Http\Protocol\ClientMessageInterface;
+use Slon\Http\Protocol\ClientMessage\Method;
+use Slon\Http\Protocol\ServerMessage\Code;
+use Slon\Http\Router\RouterInterface;
+use Slon\Http\Router\RoutesCollectionInterface;
+use Slon\Http\Router\RouteShardInterface;
 
 use function in_array;
 

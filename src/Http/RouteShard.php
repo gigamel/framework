@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Gigamel\Http;
+namespace Slon\Http;
 
-use Gigamel\Http\Router\RouteShardInterface;
+use Slon\Http\Router\RouteShardInterface;
 
 use function array_filter;
 

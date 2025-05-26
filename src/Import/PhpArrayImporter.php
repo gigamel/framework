@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Gigamel\Import;
+namespace Slon\Import;
 
 use function file_exists;
 use function is_array;
 use function str_ends_with;
 
-class PhpArrayImporter implements ImportableInterface
+class PhpArrayImporter implements ImporterInterface
 {
     public function import(string $file): array
     {

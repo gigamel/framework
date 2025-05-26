@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Gigamel\Http;
+namespace Slon\Http;
 
-use Gigamel\Http\Server\SessionException;
-use Gigamel\Http\Server\SessionInterface;
+use Slon\Http\Server\SessionException;
+use Slon\Http\Server\SessionInterface;
 
 use function session_abort;
 use function session_status;

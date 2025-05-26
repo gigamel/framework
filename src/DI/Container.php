@@ -2,10 +2,8 @@
 
 declare(strict_types=1);
 
-namespace Gigamel\DI;
+namespace Slon\DI;
 
-use Gigamel\Import\ImportableInterface;
-use Gigamel\Import\PhpArrayImporter;
 use InvalidArgumentException;
 use ReflectionClass;
 use ReflectionMethod;
@@ -19,58 +17,59 @@ use function is_string;
 
 class Container implements ContainerInterface
 {
-    protected array $dependencies = [];
+    protected array $services = [];
     
     protected array $arguments = [];
     
-    protected ImportableInterface $importer;
-    
-    public function __construct(?ImportableInterface $importer = null)
+    public function mergeArguments(array $arguments): array
     {
-        $this->importer = $importer ?? new PhpArrayImporter();
-    }
-    
-    public function importArguments(string $file): void
-    {
-        $arguments = $this->importer->import($file);
-        if ($arguments) {
-            $this->arguments = array_replace_recursive($this->arguments, $arguments);
-        }
+        $this->arguments = array_replace_recursive(
+            $this->arguments,
+            $arguments,
+        );
     }
 
     /**
      * @throws InvalidArgumentException
      */
-    public function set(string $id, mixed $dependency = null): void
+    public function set(string $id, object|string|null $service = null): void
     {
-        if (null === $dependency && !class_exists($id)) {
-            throw new InvalidArgumentException(
-                'ID should be type of class when Dependency NULL',
-            );
+        if (null === $service) {
+            $service = $id;
+        }
+        
+        if (!class_exists($service)) {
+            throw new InvalidArgumentException(sprintf(
+                'Unknown service "%s"',
+                $service,
+            ));
         }
 
-        $this->dependencies[$id] = $dependency ?? $id;
+        $this->services[$id] = $service ?? $id;
     }
 
     /**
      * @throws InvalidArgumentException
      */
-    public function get(string $id): mixed
+    public function get(string $id): object
     {
         if (!$this->has($id)) {
             throw new InvalidArgumentException(sprintf(
-                'Unknown dependency [%s]',
-                $id
+                'Unknown service [%s]',
+                $id,
             ));
         }
         
-        if (!is_string($this->dependencies[$id]) || !class_exists($this->dependencies[$id])) {
-            return $this->dependencies[$id];
+        if (
+            !is_string($this->services[$id])
+            || !class_exists($this->services[$id])
+        ) {
+            return $this->services[$id];
         }
         
-        $reflectionClass = new ReflectionClass($this->dependencies[$id]);
+        $reflectionClass = new ReflectionClass($this->services[$id]);
         if (!$constructor = $reflectionClass->getConstructor()) {
-            return $this->dependencies[$id] = $reflectionClass->newInstance();
+            return $this->services[$id] = $reflectionClass->newInstance();
         }
 
         $this->checkMethodModifiers($constructor);
@@ -81,12 +80,14 @@ class Container implements ContainerInterface
         }
 
         unset($this->arguments[$id]);
-        return $this->dependencies[$id] = $reflectionClass->newInstanceArgs($arguments);
+        return $this->services[$id] = $reflectionClass->newInstanceArgs(
+            $arguments,
+        );
     }
     
     public function has(string $id): bool
     {
-        return array_key_exists($id, $this->dependencies);
+        return array_key_exists($id, $this->services);
     }
     
     /**
@@ -97,7 +98,7 @@ class Container implements ContainerInterface
         if (!class_exists($class)) {
             throw new InvalidArgumentException(sprintf(
                 'Failed instantiate object of type [%s]',
-                $class
+                $class,
             ));
         }
         
@@ -110,12 +111,23 @@ class Container implements ContainerInterface
         return $reflectionClass->newInstanceArgs($arguments);
     }
     
-    protected function getArgument(ReflectionParameter $reflectionParameter, string $id): mixed
-    {
+    protected function getArgument(
+        ReflectionParameter $reflectionParameter,
+        string $id,
+    ): mixed {
         $type = $reflectionParameter->getType()->getName();
-        if (class_exists($type) || interface_exists($type) && $this->has($type)) {
+        if (
+            class_exists($type)
+            || interface_exists($type)
+            && $this->has($type)
+        ) {
             $argument = $this->get($type);
-        } elseif (array_key_exists($reflectionParameter->getName(), $this->arguments[$id] ?? [])) {
+        } elseif (
+            array_key_exists(
+                $reflectionParameter->getName(),
+                $this->arguments[$id] ?? []
+            )
+        ) {
             $argument = $this->arguments[$id][$reflectionParameter->getName()];
         } elseif ($reflectionParameter->isDefaultValueAvailable()) {
             $argument = $reflectionParameter->getDefaultValue();
@@ -134,9 +146,9 @@ class Container implements ContainerInterface
         }
 
         throw new InvalidArgumentException(sprintf(
-            'Method [%s] of class [%s] must has public and not abstract modifiers.',
+            'Method "%s:%s" must have public and not abstract modifiers',
             $reflectionMethod->getName(),
-            $reflectionMethod->getDeclaringClass()->getName()
+            $reflectionMethod->getDeclaringClass()->getName(),
         ));
     }
 }

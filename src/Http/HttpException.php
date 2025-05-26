@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Gigamel\Http;
 
-use Gigamel\Http\Protocol\ServerMessage\Code;
 use RuntimeException;
+use Slon\Http\Protocol\ServerMessage\Code;
 
 class HttpException extends RuntimeException implements HttpExceptionInterface
 {

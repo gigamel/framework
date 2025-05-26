@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Gigamel\Http\Protocol\ServerMessage;
+namespace Slon\Http\Protocol\ServerMessage;
 
 final class Code
 {

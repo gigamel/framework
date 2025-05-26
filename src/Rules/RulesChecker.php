@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Gigamel\Rules;
+namespace Slon\Rules;
 
 class RulesChecker implements CheckerInterface
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Gigamel\Http\Router;
+namespace Slon\Http\Router;
 
 interface RoutesCollectionInterface
 {

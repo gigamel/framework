@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Gigamel\Form\Field;
+namespace Slon\Form\Field;
 
-use Gigamel\Form\AbstractTag;
-use Gigamel\Form\Attribute;
-use Gigamel\Form\FieldInterface;
-use Gigamel\Form\RowableFieldInterface;
+use Slon\Form\AbstractTag;
+use Slon\Form\Attribute;
+use Slon\Form\FieldInterface;
+use Slon\Form\RowableFieldInterface;
 
 use function sprintf;
 use function str_replace;

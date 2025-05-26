@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Gigamel\Http;
+namespace Slon\Http;
 
-use Gigamel\Http\Protocol\ClientMessageInterface;
-use Gigamel\Http\Protocol\ClientMessage\Method;
-use Gigamel\Http\Protocol\Header;
 use JsonException;
+use Slon\Http\Protocol\ClientMessageInterface;
+use Slon\Http\Protocol\ClientMessage\Method;
+use Slon\Http\Protocol\Header;
 
 use function array_key_exists;
 use function file_get_contents;

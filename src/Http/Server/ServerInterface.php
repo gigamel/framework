@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Gigamel\Http\Server;
+namespace Slon\Http\Server;
 
-use Gigamel\Http\Protocol\ServerMessageInterface;
+use Slon\Http\Protocol\ServerMessageInterface;
 
 interface ServerInterface
 {

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Gigamel\Form;
+namespace Slon\Form;
 
-use Gigamel\Http\Protocol\ClientMessageInterface;
+use Slon\Http\Protocol\ClientMessageInterface;
 
 use function array_key_exists;
 use function file_exists;

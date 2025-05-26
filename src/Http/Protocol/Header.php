@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Gigamel\Http\Protocol;
+namespace Slon\Http\Protocol;
 
 use function strtolower;
 use function str_replace;

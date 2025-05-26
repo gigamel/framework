@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Gigamel\Http;
+namespace Slon\Http;
 
-use Gigamel\Http\Protocol\ServerMessageInterface;
-use Gigamel\Http\Protocol\ServerMessage\Code;
+use Slon\Http\Protocol\ServerMessageInterface;
+use Slon\Http\Protocol\ServerMessage\Code;
 
 class ServerMessage implements ServerMessageInterface
 {

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Gigamel\Import;
+namespace Slon\Import;
 
-interface ImportableInterface
+interface ImporterInterface
 {
     public function import(string $file): array;
 }

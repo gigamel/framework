@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Gigamel\Frontend\View\Driver;
+namespace Slon\Frontend\View\Driver;
 
-use Gigamel\Frontend\View\RenderDriverInterface;
+use Slon\Frontend\View\RenderDriverInterface;
 
 use function ob_get_clean;
 use function ob_start;

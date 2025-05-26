@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Gigamel\Http;
+namespace Slon\Http;
 
-use Gigamel\Http\Router\RoutesCollectionInterface;
-use Gigamel\Http\Router\RouteInterface;
+use Slon\Http\Router\RoutesCollectionInterface;
+use Slon\Http\Router\RouteInterface;
 
 class RoutesCollection implements RoutesCollectionInterface
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Gigamel\Frontend\View;
+namespace Slon\Frontend\View;
 
 interface RenderDriverInterface extends RenderableInterface
 {

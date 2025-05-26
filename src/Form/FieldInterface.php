@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Gigamel\Form;
+namespace Slon\Form;
 
 interface FieldInterface extends TagInterface
 {

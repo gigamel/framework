@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Gigamel\Http\Router;
+namespace Slon\Http\Router;
 
-use Gigamel\Http\HttpExceptionInterface;
-use Gigamel\Http\Protocol\ClientMessageInterface;
+use Slon\Http\HttpExceptionInterface;
+use Slon\Http\Protocol\ClientMessageInterface;
 
 interface RouterInterface
 {

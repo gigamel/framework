@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Gigamel\Http;
+namespace Slon\Http;
 
-use Gigamel\Http\Protocol\ClientMessageInterface;
-use Gigamel\Http\Protocol\ClientMessage\Method;
-use Gigamel\Http\Router\RouteInterface;
-use Gigamel\Http\Router\RouteShardInterface;
+use Slon\Http\Protocol\ClientMessageInterface;
+use Slon\Http\Protocol\ClientMessage\Method;
+use Slon\Http\Router\RouteInterface;
+use Slon\Http\Router\RouteShardInterface;
 
 use function array_filter;
 use function preg_match;
