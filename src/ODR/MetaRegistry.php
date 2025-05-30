@@ -33,12 +33,10 @@ class MetaRegistry implements MetaRegistryInterface
     public function addMeta(MetaInstanceInterface $metaInstance): void
     {
         if ($this->has($metaInstance->getId())) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'Meta instance "%s" already exists',
-                    $metaInstance->getId(),
-                ),
-            );
+            throw new InvalidArgumentException(sprintf(
+                'Meta instance "%s" already exists',
+                $metaInstance->getId(),
+            ));
         }
         
         $this->metaInstances[$metaInstance->getId()] = $metaInstance;
@@ -62,9 +60,10 @@ class MetaRegistry implements MetaRegistryInterface
             }
         }
 
-        throw new MetaInstanceNotFoundException(
-            sprintf('Undefined "%s" instance', $id),
-        );
+        throw new MetaInstanceNotFoundException(sprintf(
+            'Undefined "%s" instance',
+            $id,
+        ));
     }
 
     public function has(string $id): bool
@@ -111,20 +110,16 @@ class MetaRegistry implements MetaRegistryInterface
 
         if ($rootMetaInstance->getId() === $innerReference->getId()) {
             if ($innerMetaInstance) {
-                throw new RuntimeException(
-                    sprintf(
-                        'Detected circular reference "%s" -> <- "%s"',
-                        $rootMetaInstance->getClassName(),
-                        $innerMetaInstance->getClassName(),
-                    ),
-                );
+                throw new RuntimeException(sprintf(
+                    'Detected circular reference "%s" -> <- "%s"',
+                    $rootMetaInstance->getClassName(),
+                    $innerMetaInstance->getClassName(),
+                ));
             } else {
-                throw new RuntimeException(
-                    sprintf(
-                        'Detected self reference "%s"',
-                        $rootMetaInstance->getClassName(),
-                    ),
-                );
+                throw new RuntimeException(sprintf(
+                    'Detected self reference "%s"',
+                    $rootMetaInstance->getClassName(),
+                ));
             }
         }
 

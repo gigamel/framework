@@ -27,9 +27,10 @@ class MetaInstance implements MetaInstanceInterface
         protected ?string $id = null
     ) {
         if (!class_exists($className)) {
-            throw new InvalidArgumentException(
-                sprintf('Class "%s" does not exists', $className),
-            );
+            throw new InvalidArgumentException(sprintf(
+                'Class "%s" does not exists',
+                $className,
+            ));
         }
         
         $this->className = $className;
@@ -43,18 +44,17 @@ class MetaInstance implements MetaInstanceInterface
         ReferenceInterface $reference,
     ): self {
         if (empty($name)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'Argument name of class "%s" must not be empty',
-                    $this->getClassName(),
-                ),
-            );
+            throw new InvalidArgumentException(sprintf(
+                'Argument name of class "%s" must not be empty',
+                $this->getClassName(),
+            ));
         }
 
         if (array_key_exists($name, $this->arguments)) {
-            throw new InvalidArgumentException(
-                sprintf('Argument "%s" already exists', $name),
-            );
+            throw new InvalidArgumentException(sprintf(
+                'Argument "%s" already exists',
+                $name,
+            ));
         }
 
         $this->arguments[$name] = $reference;

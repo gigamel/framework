@@ -17,9 +17,10 @@ class Reference implements ReferenceInterface
     public function __construct(string $id)
     {
         if (empty($id)) {
-            throw new InvalidArgumentException(
-                sprintf('Reference id "%s" is empty', $id),
-            );
+            throw new InvalidArgumentException(sprintf(
+                'Reference id "%s" is empty',
+                $id,
+            ));
         }
 
         $this->id = $id;

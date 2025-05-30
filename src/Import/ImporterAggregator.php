@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Slon\DI\Import;
+namespace Slon\Import;
 
 use InvalidArgumentException;
 use SplFileInfo;
@@ -41,22 +41,18 @@ class ImporterAggregator implements ImporterAggregatorInterface
     public function import(string $file): array
     {
         if (!file_exists($file)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'File "%s" is not exists',
-                    $file,
-                ),
-            );
+            throw new InvalidArgumentException(sprintf(
+                'File "%s" is not exists',
+                $file,
+            ));
         }
         
         $splFile = new SplFileInfo($file);
         if (!array_key_exists($splFile->getExtension(), $this->importers)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'Undefined importer for "%s"',
-                    $splFile->getExtension(),
-                ),
-            );
+            throw new InvalidArgumentException(sprintf(
+                'Undefined importer for "%s"',
+                $splFile->getExtension(),
+            ));
         }
         
         return $this->importers[$splFile->getExtension()]->import(
