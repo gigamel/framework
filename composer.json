@@ -3,7 +3,8 @@
     "type": "library",
     "description": "PHP framework for building Apps",
     "require": {
-        "php": ">=8.3"
+        "php": ">=8.3",
+        "psr/container": "^2.0@dev"
     },
     "autoload": {
         "psr-4": { "Slon\\": "src" }

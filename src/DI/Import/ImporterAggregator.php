@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Slon\Import;
+namespace Slon\DI\Import;
 
 use InvalidArgumentException;
 use SplFileInfo;
@@ -27,6 +27,14 @@ class ImporterAggregator implements ImporterAggregatorInterface
         string $extension,
         ImporterInterface $importer,
     ): void {
+        if ($this === $importer) {
+            throw new InvalidArgumentException(sprintf(
+                'Detected circular ref "%s" in class "%s"',
+                $importer::class,
+                static::class,
+            ));
+        }
+        
         $this->importers[$extension] = $importer;
     }
     

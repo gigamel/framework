@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Slon\Import;
+namespace Slon\DI\Import;
 
 interface ImporterAggregatorInterface extends ImporterInterface
 {
