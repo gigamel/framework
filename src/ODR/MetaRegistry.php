@@ -91,7 +91,7 @@ class MetaRegistry implements MetaRegistryInterface
             $arguments[$name] = $reference->load($this);
         }
 
-        return $this->instances[$id] = new (
+        return $this->instances[$metaInstance->getId()] = new (
             $metaInstance->getClassName()
         )(...$arguments);
     }
