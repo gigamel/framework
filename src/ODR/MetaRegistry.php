@@ -51,13 +51,11 @@ class MetaRegistry implements MetaRegistryInterface
         if (array_key_exists($id, $this->instances)) {
             return $this->instances[$id];
         }
-
-        foreach ($this->metaInstances as $metaInstance) {
-            if ($id === $metaInstance->getId()) {
-                return $this->instances[$id] = $this->instantiate(
-                    $metaInstance,
-                );
-            }
+        
+        if (array_key_exists($id, $this->metaInstances)) {
+            return $this->instances[$id] = $this->instantiate(
+                $this->metaInstances[$id],
+            );
         }
 
         throw new MetaInstanceNotFoundException(sprintf(
