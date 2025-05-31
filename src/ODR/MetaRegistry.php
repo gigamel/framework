@@ -53,7 +53,7 @@ class MetaRegistry implements MetaRegistryInterface
         }
         
         if (array_key_exists($id, $this->metaInstances)) {
-            return $this->instances[$id] = $this->instantiate(
+            return $this->instantiate(
                 $this->metaInstances[$id],
             );
         }
@@ -91,7 +91,9 @@ class MetaRegistry implements MetaRegistryInterface
             $arguments[$name] = $reference->load($this);
         }
 
-        return new ($metaInstance->getClassName())(...$arguments);
+        return $this->instances[$id] = new (
+            $metaInstance->getClassName()
+        )(...$arguments);
     }
 
     /**
@@ -102,10 +104,10 @@ class MetaRegistry implements MetaRegistryInterface
         ReferenceInterface $innerReference,
         ?MetaInstanceInterface $innerMetaInstance = null,
     ): void {
-        if (!class_exists($innerReference->getId())) {
+        if (!array_key_exists($innerReference->getId(), $this->metaInstances)) {
             return;
         }
-
+        
         if ($rootMetaInstance->getId() === $innerReference->getId()) {
             if ($innerMetaInstance) {
                 throw new RuntimeException(sprintf(
@@ -113,16 +115,24 @@ class MetaRegistry implements MetaRegistryInterface
                     $rootMetaInstance->getClassName(),
                     $innerMetaInstance->getClassName(),
                 ));
-            } else {
-                throw new RuntimeException(sprintf(
-                    'Detected self reference "%s"',
-                    $rootMetaInstance->getClassName(),
-                ));
             }
+            
+            throw new RuntimeException(sprintf(
+                'Detected self reference "%s"',
+                $rootMetaInstance->getClassName(),
+            ));
         }
-
+        
         $nextMetaInstance = $this->metaInstances[$innerReference->getId()];
         foreach ($nextMetaInstance->getArguments() as $nextReference) {
+            if ($innerMetaInstance?->getId() === $nextReference->getId()) {
+                throw new RuntimeException(sprintf(
+                    'Detected circular reference "%s" -> <- "%s"',
+                    $innerMetaInstance->getClassName(),
+                    $nextMetaInstance->getClassName(),
+                ));
+            }
+            
             $this->checkCircular(
                 $rootMetaInstance,
                 $nextReference,
