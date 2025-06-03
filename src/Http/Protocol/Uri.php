@@ -8,49 +8,52 @@ use Psr\Http\Message\UriInterface;
 
 class Uri implements UriInterface
 {
+    protected ParsedUrl $parsedUrl;
+
     public function __construct(string $uri)
     {
-        $chunks = \parse_url($uri);
+        \assert(\filter_var($uri, \FILTER_VALIDATE_URL));
+        $this->parsedUrl = new ParsedUrl(...\parse_url($uri));
     }
     
     public function getScheme(): string
     {
-        return '';
+        return $this->parsedUrl->scheme;
     }
     
     public function getAuthority(): string
     {
-        return '';
+        return $this->parsedUrl->authority;
     }
     
     public function getUserInfo(): string
     {
-        return '';
+        return $this->parsedUrl->userInfo;
     }
     
     public function getHost(): string
     {
-        return '';
+        return $this->parsedUrl->host;
     }
     
     public function getPort(): ?int
     {
-        return 80;
+        return $this->parsedUrl->port;
     }
     
     public function getPath(): string
     {
-        return '';
+        return $this->parsedUrl->path;
     }
     
     public function getQuery(): string
     {
-        return '';
+        return $this->parsedUrl->query;
     }
     
     public function getFragment(): string
     {
-        return '';
+        return $this->parsedUrl->fragment;
     }
     
     public function withScheme(string $scheme): UriInterface
@@ -90,6 +93,6 @@ class Uri implements UriInterface
     
     public function __toString(): string
     {
-        return '';
+        return (string) $this->parsedUrl;
     }
 }

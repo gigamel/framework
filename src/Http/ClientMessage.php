@@ -130,8 +130,10 @@ class ClientMessage implements RequestInterface
         return $this->uri;
     }
     
-    public function withUri(UriInterface $uri, bool $preserveHost = false): RequestInterface
-    {
+    public function withUri(
+        UriInterface $uri,
+        bool $preserveHost = false,
+    ): RequestInterface {
         return $this;
     }
     
