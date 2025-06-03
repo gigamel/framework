@@ -2,15 +2,15 @@
 
 namespace Test\Http\Router;
 
-use Gigamel\Http\ClientMessage;
-use Gigamel\Http\Route;
-use Gigamel\Http\Router;
-use Gigamel\Http\Router\RouterInterface;
-use Gigamel\Http\Router\RouteInterface;
-use Gigamel\Http\Router\RouteShardInterface;
-use Gigamel\Http\RoutesCollection;
+use Psr\Http\Message\UriInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Slon\Http\ClientMessage;
+use Slon\Http\Route;
+use Slon\Http\Router;
+use Slon\Http\Router\RouterInterface;
+use Slon\Http\Router\RouteShardInterface;
+use Slon\Http\RoutesCollection;
 
 class RouterTest extends TestCase
 {
@@ -51,10 +51,16 @@ class RouterTest extends TestCase
         ?string $rule = null
     ): void {
         $clientMessage = $this->createStub(ClientMessage::class);
-
-        $clientMessage
+        
+        $uriStub = $this->createStub(UriInterface::class);
+        
+        $uriStub
             ->method('getPath')
             ->willReturn($path);
+
+        $clientMessage
+            ->method('getUri')
+            ->willReturn($uriStub);
 
         $clientMessage
             ->method('getMethod')

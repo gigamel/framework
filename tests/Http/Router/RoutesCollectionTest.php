@@ -2,9 +2,9 @@
 
 namespace Test\Http\Router;
 
-use Gigamel\Http\Route;
-use Gigamel\Http\Router\RouteInterface;
-use Gigamel\Http\RoutesCollection;
+use Slon\Http\Route;
+use Slon\Http\Router\RouteInterface;
+use Slon\Http\RoutesCollection;
 use PHPUnit\Framework\TestCase;
 
 class RoutesCollectionTest extends TestCase

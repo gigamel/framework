@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Slon\Http;
 
-use Slon\Http\Protocol\ClientMessageInterface;
+use Psr\Http\Message\RequestInterface;
 use Slon\Http\Protocol\ClientMessage\Method;
 use Slon\Http\Router\RouteInterface;
 use Slon\Http\Router\RouteShardInterface;
@@ -52,7 +52,7 @@ class Route implements RouteInterface
         return $this->methods;
     }
 
-    public function match(ClientMessageInterface $message): ?RouteShardInterface
+    public function match(RequestInterface $message): ?RouteShardInterface
     {
         $rule = $this->getRule();
         foreach ($this->tokens as $id => $regEx) {
@@ -63,7 +63,7 @@ class Route implements RouteInterface
             );
         }
 
-        return (bool) preg_match(sprintf('~^%s$~', $rule), $message->getPath(), $matches)
+        return (bool) preg_match(sprintf('~^%s$~', $rule), $message->getUri()->getPath(), $matches)
             ? new RouteShard($this->getHandler(), array_filter($matches))
             : null;
     }

@@ -4,128 +4,148 @@ declare(strict_types=1);
 
 namespace Slon\Http;
 
-use JsonException;
-use Slon\Http\Protocol\ClientMessageInterface;
+use Psr\Http\Message\MessageInterface;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\StreamInterface;
+use Psr\Http\Message\UriInterface;
 use Slon\Http\Protocol\ClientMessage\Method;
-use Slon\Http\Protocol\Header;
+use Slon\Http\Protocol\Headers;
+use Slon\Http\Protocol\Stream\StandartStream;
+use Slon\Http\Protocol\Uri;
+use Slon\Http\Protocol\Version;
 
-use function array_key_exists;
-use function file_get_contents;
-use function json_decode;
-use function parse_url;
-use function strtolower;
-use function strpos;
-use function strtoupper;
-use function str_contains;
-use function str_replace;
-use function substr;
-use function ucwords;
-
-class ClientMessage implements ClientMessageInterface
+class ClientMessage implements RequestInterface
 {
-    protected Uri $uri;
+    protected UriInterface $uri;
 
-    protected array $headers = [];
-
-    protected array $segments = [];
-
-    protected array $bodyParams = [];
+    protected Headers $headers;
     
-    public function __construct()
-    {
-        $this->uri = new Uri($_SERVER['REQUEST_URI'] ?? '/');
-        $this->parseHeaders();
-        $this->parseBodyParams();
+    protected string $method;
+
+    protected string $protocolVersion;
+
+    public function __construct(
+        string $uri,
+        string $method,
+        array $headers = [],
+        string $protocolVersion = Version::HTTP_1_1,
+    ) {
+        $this->uri = new Uri($uri);
+        $this->setMethod($method);
+        $this->setProtocolVersion($protocolVersion);
+        $this->headers = new Headers($headers);
     }
     
-    public function getMethod(): string
+    public function getProtocolVersion(): string
     {
-        return $_SERVER['REQUEST_METHOD'];
+        return $this->protocolVersion;
     }
     
-    public function getPath(): string
+    public function withProtocolVersion(string $version): MessageInterface
     {
-        return $this->uri->getPath();
+        if ($version === $this->protocolVersion) {
+            return $this;
+        }
+        
+        return (clone $this)->setProtocolVersion($version);
     }
     
     public function getHeaders(): array
     {
-        return $this->headers;
+        return $this->headers->all();
     }
     
-    public function getHeader(string $key): ?string
+    public function hasHeader(string $name): bool
     {
-        return $this->headers[$key] ?? null;
+        return $this->headers->has($name);
     }
     
-    public function hasHeader(string $key): bool
+    public function getHeader(string $name): array
     {
-        return array_key_exists($key, $this->headers);
+        return $this->headers->get($name);
     }
     
-    public function setSegment(string $name, string|int|float $segment): void
+    public function getHeaderLine(string $name): string
     {
-        $this->segments[$name] = match (true) {
-            ctype_digit($segment) => (int) $segment,
-            is_numeric($segment) => (float) $segment,
-            default => $segment,
-        };
+        return $this->headers->getLine($name);
     }
     
-    public function getSegment(string $name): string|int|float|null
-    {
-        return $this->segments[$name] ?? null;
+    public function withHeader(
+         string $name,
+         $value,
+    ): MessageInterface {
+        $cloned = clone $this;
+        $cloned->headers->set($name, $value);
+        return $cloned;
     }
     
-    public function hasSegment(string $name): bool
+    public function withAddedHeader(
+        string $name,
+        $value,
+    ): MessageInterface {
+        $cloned = clone $this;
+        $cloned->headers->add($name, $value);
+        return $cloned;
+    }
+    
+    public function withoutHeader(string $name): MessageInterface
     {
-        return array_key_exists($name, $this->segments);
+        $cloned = clone $this;
+        $cloned->headers->remove($name, $value);
+        return $cloned;
+    }
+    
+    public function getBody(): StreamInterface
+    {
+        return new StandartStream(); // Todo
+    }
+    
+    public function withBody(StreamInterface $body): MessageInterface
+    {
+        return $this;
+    }
+    
+    public function getRequestTarget(): string
+    {
+        return '*'; // Todo
+    }
+    
+    public function withRequestTarget(string $requestTarget): RequestInterface
+    {
+        return $this; // Todo
+    }
+    
+    public function getMethod(): string
+    {
+        return $this->method;
+    }
+    
+    public function withMethod(string $method): RequestInterface
+    {
+        return (clone $this)->setMethod($method);
+    }
+    
+    public function getUri(): UriInterface
+    {
+        return $this->uri;
+    }
+    
+    public function withUri(UriInterface $uri, bool $preserveHost = false): RequestInterface
+    {
+        return $this;
+    }
+    
+    protected function setMethod(string $method): self
+    {
+        \assert(\in_array($method, Method::ALLOWED, true));
+        $this->method = $method;
+        return $this;
     }
 
-    public function isMethod(string $method): bool
+    protected function setProtocolVersion(string $version): self
     {
-        return $this->getMethod() === trim(strtoupper($method));
-    }
-
-    public function getUriParam(string $name, mixed $default = null): mixed
-    {
-        return $_GET[$name] ?? $default;
-    }
-
-    public function getBodyParam(string $name, mixed $default = null): mixed
-    {
-        return $this->bodyParams[$name] ?? $default;
-    }
-
-    public function getFormParam(string $name, mixed $default = null): mixed
-    {
-        return $_POST[$name] ?? $default;
-    }
-
-    protected function parseHeaders(): void
-    {
-        foreach ($_SERVER as $key => $value) {
-            if (0 === strpos($key, 'HTTP_')) {
-                $this->headers[Header::normalize(substr($key, 5))] = $value;
-            }
-        }
-    }
-
-    protected function parseBodyParams(): void
-    {
-        if (!$this->hasHeader(Header::CONTENT_TYPE)) {
-            return;
-        }
-
-        $contentType = strtolower($this->getHeader(Header::CONTENT_TYPE));
-        if (!str_contains($contentType, 'application/json')) {
-            return;
-        }
-
-        try {
-            $this->bodyParams = json_decode(file_get_contents('php://input') ?: '', true, 512, JSON_THROW_ON_ERROR);
-        } catch (JsonException) {
-            // nothing to do
-        }
+        \assert(\in_array($version, Version::NUMBERS, true));
+        $this->protocolVersion = $version;
+        return $this;
     }
 }

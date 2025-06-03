@@ -1,13 +1,16 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Test\Http\Router;
 
-use Gigamel\Http\ClientMessage;
-use Gigamel\Http\Route;
-use Gigamel\Http\Router\RouteInterface;
-use Gigamel\Http\Router\RouteShardInterface;
+use Psr\Http\Message\UriInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Slon\Http\ClientMessage;
+use Slon\Http\Route;
+use Slon\Http\Router\RouteInterface;
+use Slon\Http\Router\RouteShardInterface;
 
 class RouteTest extends TestCase
 {
@@ -44,9 +47,16 @@ class RouteTest extends TestCase
         $route = $this->makeRoute();
 
         $clientMessage = $this->createStub(ClientMessage::class);
-        $clientMessage
+        
+        $uriStub = $this->createStub(UriInterface::class);
+        
+        $uriStub
             ->method('getPath')
             ->willReturn($uri);
+        
+        $clientMessage
+            ->method('getUri')
+            ->willReturn($uriStub);
 
         $routeShard = $route->match($clientMessage);
         $this->assertInstanceOf(RouteShardInterface::class, $routeShard);

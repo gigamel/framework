@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Slon\Http\Router;
 
+use Psr\Http\Message\RequestInterface;
 use Slon\Http\HttpExceptionInterface;
-use Slon\Http\Protocol\ClientMessageInterface;
 
 interface RouterInterface
 {
     /**
      * @throws HttpExceptionInterface
      */
-    public function handleClientMessage(ClientMessageInterface $message): RouteShardInterface;
+    public function handleClientMessage(RequestInterface $message): RouteShardInterface;
 
     /**
      * @throws HttpExceptionInterface

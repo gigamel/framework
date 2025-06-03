@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace Slon\Http;
 
+use Psr\Http\Message\RequestInterface;
 use Slon\Http\HttpException;
-use Slon\Http\Protocol\ClientMessageInterface;
-use Slon\Http\Protocol\ClientMessage\Method;
-use Slon\Http\Protocol\ServerMessage\Code;
 use Slon\Http\Router\RouterInterface;
 use Slon\Http\Router\RoutesCollectionInterface;
 use Slon\Http\Router\RouteShardInterface;
@@ -24,7 +22,7 @@ class Router implements RouterInterface
     /**
      * @throws inheritDoc
      */
-    public function handleClientMessage(ClientMessageInterface $message): RouteShardInterface
+    public function handleClientMessage(RequestInterface $message): RouteShardInterface
     {
         foreach ($this->collection->getCollection() as $route) {
             if (!in_array($message->getMethod(), $route->getMethods(), true)) {

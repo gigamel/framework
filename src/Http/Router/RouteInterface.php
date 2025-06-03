@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Slon\Http\Router;
 
-use Slon\Http\Protocol\ClientMessageInterface;
+use Psr\Http\Message\RequestInterface;
 
 interface RouteInterface
 {
@@ -24,7 +24,7 @@ interface RouteInterface
      */
     public function getMethods(): array;
 
-    public function match(ClientMessageInterface $message): ?RouteShardInterface;
+    public function match(RequestInterface $message): ?RouteShardInterface;
 
     public function generate(array $segments = []): string;
 }
