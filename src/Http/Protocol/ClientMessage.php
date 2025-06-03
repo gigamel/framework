@@ -2,17 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Slon\Http;
+namespace Slon\Http\Protocol;
 
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
 use Slon\Http\Protocol\ClientMessage\Method;
-use Slon\Http\Protocol\Headers;
 use Slon\Http\Protocol\Stream\StandartStream;
-use Slon\Http\Protocol\Uri;
-use Slon\Http\Protocol\Version;
 
 class ClientMessage implements RequestInterface
 {

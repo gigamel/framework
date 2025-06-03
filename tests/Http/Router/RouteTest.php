@@ -7,7 +7,7 @@ namespace Test\Http\Router;
 use Psr\Http\Message\UriInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use Slon\Http\ClientMessage;
+use Slon\Http\Protocol\ClientMessage;
 use Slon\Http\Route;
 use Slon\Http\Router\RouteInterface;
 use Slon\Http\Router\RouteShardInterface;
